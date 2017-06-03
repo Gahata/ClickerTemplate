@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Clicker Template</string>
+
+    <string name="title_buildings">Buildings</string>
+    <string name="title_clicker">Click!</string>
+    <string name="title_upgrades">Upgrades</string>
+
+    <string name="building1_name">building1_name</string>
+    <string name="building2_name">building2_name</string>
+    <string name="building3_name">building3_name</string>
+    <string name="building4_name">building4_name</string>
+    <string name="building5_name">building5_name</string>
+    <string name="building6_name">building6_name</string>
+    <string name="building7_name">building7_name</string>
+    <string name="building8_name">building8_name</string>
+    <string name="building9_name">building9_name</string>
+    <string name="building10_name">building10_name</string>
+    <string name="building11_name">building11_name</string>
+    <string name="building12_name">building12_name</string>
+
+    <string name="building1_flavour">building1_flavour</string>
+    <string name="building2_flavour">building2_flavour</string>
+    <string name="building3_flavour">building3_flavour</string>
+    <string name="building4_flavour">building4_flavour</string>
+    <string name="building5_flavour">building5_flavour</string>
+    <string name="building6_flavour">building6_flavour</string>
+    <string name="building7_flavour">building7_flavour</string>
+    <string name="building8_flavour">building8_flavour</string>
+    <string name="building9_flavour">building9_flavour</string>
+    <string name="building10_flavour">building10_flavour</string>
+    <string name="building11_flavour">building11_flavour</string>
+    <string name="building12_flavour">building12_flavour</string>
+
+    <string name="currency">currency_name</string>
+
+    <string name="no_currency">You don\'t have any</string>
+    <string name="no_automated_production">You aren\'t producing anything automatically</string>
+    <string name="never_any_currency">You have never produced anything</string>
+
+
+    <string name="total_produced">Total amount produced</string>
+    <string name="production_second">Production amount per second</string>
+
+
+    <string name="menu_button_description">Menu overflow button</string>
+    <string name="notification_button_description">Notification button</string>
+    <string name="total_arrow_description">Total view expand button</string>
+
+
+    <string name="music">Music</string>
+    <string name="sound">Sound</string>
+    <string name="about">About</string>
+    <string name="fullscreen">Fullscreen</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_splash">SplashActivity</string>
+
+
+</resources>

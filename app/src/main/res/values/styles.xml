@@ -1,0 +1,29 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/statusbarBackground</item>
+        <item name="colorAccent">@color/settingsCheckbox</item>
+        <item name="android:textColorSecondary">@color/md_grey_500</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat">
+        <item name="colorPrimary">@color/toolbarBackground</item>
+        <item name="android:textColorSecondary">@color/toolbarButtons</item>
+    </style>
+
+    <style name="AppTheme.BottomNavigationBar" parent="ThemeOverlay.AppCompat">
+        <item name="colorPrimary">@color/bottomNavigationButtonPressed</item>
+        <item name="android:textColorSecondary">@color/bottomNavigationButton</item>
+
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
