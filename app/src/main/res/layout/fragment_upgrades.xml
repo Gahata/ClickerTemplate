@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/md_black_1000"
-        android:text="FRAGMENT UPGRADES"
+        android:text="UPGRADES FRAGMENT TO BE DONE"
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="24sp"/>

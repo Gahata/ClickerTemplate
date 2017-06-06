@@ -1,14 +1,19 @@
 package com.example.pjezi.clickertemplate;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 public class ClickFragment extends Fragment {
+
+    ImageView click_object;
 
     private OnFragmentInteractionListener mListener;
 
@@ -30,7 +35,21 @@ public class ClickFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_click, container, false);
+        View v =  inflater.inflate(R.layout.fragment_click, container, false);
+
+        click_object = (ImageView) v.findViewById(R.id.cookie);
+
+        click_object.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click_object.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.image_click));
+                MainActivity.bankValue++;
+                MainActivity.totalValue++;
+                MainActivity.clicksAmount++;
+            }
+        });
+
+        return v;
     }
 
     public void onButtonPressed(Uri uri) {

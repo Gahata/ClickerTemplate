@@ -17,6 +17,9 @@
     <string name="building10_name">building10_name</string>
     <string name="building11_name">building11_name</string>
     <string name="building12_name">building12_name</string>
+    <string name="building13_name">building13_name</string>
+    <string name="building14_name">building14_name</string>
+    <string name="building15_name">building15_name</string>
 
     <string name="building1_flavour">building1_flavour</string>
     <string name="building2_flavour">building2_flavour</string>
@@ -30,6 +33,13 @@
     <string name="building10_flavour">building10_flavour</string>
     <string name="building11_flavour">building11_flavour</string>
     <string name="building12_flavour">building12_flavour</string>
+    <string name="building13_flavour">building13_flavour</string>
+    <string name="building14_flavour">building14_flavour</string>
+    <string name="building15_flavour">building15_flavour</string>
+
+    <string name="building_purchase">Purchase</string>
+    <string name="building_sell">Sell</string>
+    <string name="building_expand">Expand</string>
 
     <string name="currency">currency_name</string>
 
@@ -37,24 +47,16 @@
     <string name="no_automated_production">You aren\'t producing anything automatically</string>
     <string name="never_any_currency">You have never produced anything</string>
 
-
     <string name="total_produced">Total amount produced</string>
     <string name="production_second">Production amount per second</string>
-
 
     <string name="menu_button_description">Menu overflow button</string>
     <string name="notification_button_description">Notification button</string>
     <string name="total_arrow_description">Total view expand button</string>
 
-
     <string name="music">Music</string>
     <string name="sound">Sound</string>
     <string name="about">About</string>
     <string name="fullscreen">Fullscreen</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_splash">SplashActivity</string>
-
 
 </resources>
