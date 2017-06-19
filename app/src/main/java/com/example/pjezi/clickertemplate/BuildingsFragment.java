@@ -19,13 +19,15 @@ import java.text.DecimalFormat;
 import static com.example.pjezi.clickertemplate.MainActivity.bankValue;
 import static com.example.pjezi.clickertemplate.MainActivity.buildings;
 import static com.example.pjezi.clickertemplate.MainActivity.numberToLetterFromDouble;
-import static com.example.pjezi.clickertemplate.MainActivity.numberToLetterFromDoubleBankPerSecond;
-import static com.example.pjezi.clickertemplate.MainActivity.perSecondText;
+import static com.example.pjezi.clickertemplate.MainActivity.numberToLetterFromDoublePerSecond;
 import static com.example.pjezi.clickertemplate.MainActivity.perSecondValue;
+import static com.example.pjezi.clickertemplate.MainActivity.updatePerSecondValue;
 
 public class BuildingsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    TextView perSecondView;
 
     public BuildingsFragment() {
     }
@@ -45,6 +47,9 @@ public class BuildingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        perSecondView = (TextView)getActivity().findViewById(R.id.currency_per_second_textview);
+
         View v =  inflater.inflate(R.layout.fragment_buildings, container, false);
 
         MainActivity.building building1 = buildings.get(0);
@@ -544,7 +549,11 @@ public class BuildingsFragment extends Fragment {
         });
 
         for (MainActivity.building building : buildings) {
-            building.costTextView.setText(numberToLetterFromDouble(building.cost));
+            building.costTextView.setText(numberToLetterFromDouble(building.cost)+" "+getString(R.string.currency));
+        }
+
+        for (MainActivity.building building : buildings) {
+            building.amountTextView.setText(getString(R.string.building_amount, building.amount));
         }
 
         return v;
@@ -553,14 +562,12 @@ public class BuildingsFragment extends Fragment {
     //method for purchasing a building
     void purchase(MainActivity.building building) {
         if (bankValue >= building.cost) {
-
-            DecimalFormat format = new DecimalFormat("#");
-            format.setDecimalSeparatorAlwaysShown(false);
+            //DecimalFormat format = new DecimalFormat("#");
+            //format.setDecimalSeparatorAlwaysShown(false);
 
             bankValue = bankValue - building.cost;
             building.amount++;
-            String buildingAmount = "x" + String.valueOf(building.amount);
-            building.amountTextView.setText(buildingAmount);
+            building.amountTextView.setText(getString(R.string.building_amount, building.amount));
             if (building.amount == 0)
                 building.cost = building.baseCost;
             else
@@ -568,8 +575,9 @@ public class BuildingsFragment extends Fragment {
 
             setCostTextView(building);
 
-            perSecondValue = perSecondValue + building.production;
-            perSecondText.setText("Per second: " + numberToLetterFromDoubleBankPerSecond(perSecondValue));
+            updatePerSecondValue();
+            //perSecondValue = perSecondValue + building.production;
+            perSecondTextChanger(perSecondValue);
         } else {
             Toast.makeText(getContext(),"You don't have enough currency for that",Toast.LENGTH_SHORT).show();
         }
@@ -578,23 +586,22 @@ public class BuildingsFragment extends Fragment {
     void sell(MainActivity.building building) {
 
         if (building.amount >= 1) {
-            DecimalFormat format = new DecimalFormat("#.#");
-            format.setDecimalSeparatorAlwaysShown(false);
+            //DecimalFormat format = new DecimalFormat("#.#");
+            //format.setDecimalSeparatorAlwaysShown(false);
 
             bankValue = bankValue + 0.5 * building.cost;
             building.amount--;
-            String buildingAmount = "x" + String.valueOf(building.amount);
-            building.amountTextView.setText(buildingAmount);
+            building.amountTextView.setText(getString(R.string.building_amount, building.amount));
             if (building.amount == 0)
                 building.cost = building.baseCost;
             else
                 building.cost = building.baseCost * (1.15 * (building.amount));
 
-
             setCostTextView(building);
 
-            perSecondValue = perSecondValue + building.production;
-            perSecondText.setText("Per second: " + numberToLetterFromDoubleBankPerSecond(perSecondValue));
+            updatePerSecondValue();
+            //perSecondValue = perSecondValue + building.production;
+            perSecondTextChanger(perSecondValue);
         }
         else
             Toast.makeText(getContext(),"You don't have any building to sell",Toast.LENGTH_SHORT).show();
@@ -627,6 +634,11 @@ public class BuildingsFragment extends Fragment {
         building.costTextView.setText(truncatedCost);
     }
 
+    void perSecondTextChanger(double value) {
+        String perSecondString = getResources().getString(R.string.per_second_production) + " " + numberToLetterFromDoublePerSecond(value);
+        perSecondView.setText(perSecondString);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -650,7 +662,7 @@ public class BuildingsFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
 }

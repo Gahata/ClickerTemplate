@@ -1,6 +1,10 @@
 package com.example.pjezi.clickertemplate;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,13 +31,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.pjezi.clickertemplate.R.id.bottom_nav_bar;
 import static com.example.pjezi.clickertemplate.R.id.popup_fullscreen;
+import static com.example.pjezi.clickertemplate.R.string.building1_name;
 
 public class MainActivity extends AppCompatActivity
         implements BuildingsFragment.OnFragmentInteractionListener, ClickFragment.OnFragmentInteractionListener, UpgradesFragment.OnFragmentInteractionListener{
 
     //button for notification view opening
-    private ImageButton notification_button;
+    private ImageButton notificationButton;
+
+    View navigation_button_click;
 
     //booleans for settings in overflow menu
     private boolean fullscreen = false;
@@ -46,21 +54,23 @@ public class MainActivity extends AppCompatActivity
     //textViews for currency values
     TextView bankText;
     TextView totalText;
-    static TextView perSecondText;
+    TextView perSecondText;
 
     //currency values and production data
-    public static double bankValue = 0;
-    public static double totalValue = 0;
-    public static double perSecondValue = 0;
+    public static double bankValue;
+    public static double totalValue;
+    public static double perSecondValue;
 
     //number of taps
-    static int clicksAmount = 0;
+    static int clicksAmount;
 
     //buildings class instance;
     building building;
 
     //arraylist for storing all buildings with their values
     public static ArrayList<building> buildings = new ArrayList<>();
+    public static ArrayList<Building> buildings2 = new ArrayList<>();
+
 
     private ViewPager pager;
     FragmentPagerAdapter adapterViewPager;
@@ -110,24 +120,15 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<Fragment> fragments = getFragments();
-
         //making bottomnavbar work
-        final BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        final BottomNavigationView navigation = (BottomNavigationView) findViewById(bottom_nav_bar);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //making toolbar (actionbar) work
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        notification_button = (ImageButton) findViewById(R.id.notification_button);
-        notification_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Notification button successful",Toast.LENGTH_SHORT).show();
-            }
-
-        });
+        List<Fragment> fragments = getFragments();
 
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager(), fragments);
         pager = (ViewPager) findViewById(R.id.view_pager);
@@ -156,12 +157,29 @@ public class MainActivity extends AppCompatActivity
         pager.addOnPageChangeListener(pageChangeListener);
 
         //navigation to click panel at app start
-        View view = navigation.findViewById(R.id.navigation_click);
-        view.performClick();
+        navigation_button_click = navigation.findViewById(R.id.navigation_click);
+
+        //initializing notification button and making a toast
+        //TODO implement notification view
+        notificationButton = (ImageButton) findViewById(R.id.notification_button);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"Notification button successful",Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
         totalText = (TextView) findViewById(R.id.total_currency_textview);
         bankText = (TextView) findViewById(R.id.bank_textview);
         perSecondText = (TextView) findViewById(R.id.currency_per_second_textview);
+
+        perSecondText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),String.valueOf(perSecondValue),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //total currency produced view expansion arrow and code for animated rotation on click
         totalExpandArrow = (ImageView) findViewById(R.id.total_expand_arrow);
@@ -177,7 +195,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
     }
 
     //method initializing gameplay
@@ -200,42 +217,60 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         //calling method to load data when app starts
         loadData();
+        //navigating to click page when app starts
+        navigation_button_click.performClick();
     }
 
     //method to save all data before app is killed
     void saveData() {
         SharedPreferences.Editor editor = getSharedPreferences("savedData", MODE_PRIVATE).edit();
+
         //checking if array of buildings is full, ie created
-        if (buildings.size() == 12) {
+        if (buildings.size() == 15) {
             editor.putInt("building1amount", buildings.get(0).amount);
+            editor.putInt("building1level", buildings.get(0).level);
             editor.putLong("building1cost", Double.doubleToRawLongBits(buildings.get(0).cost));
             editor.putInt("building2amount", buildings.get(1).amount);
+            editor.putInt("building2level", buildings.get(0).level);
             editor.putLong("building2cost", Double.doubleToRawLongBits(buildings.get(1).cost));
             editor.putInt("building3amount", buildings.get(2).amount);
+            editor.putInt("building3level", buildings.get(0).level);
             editor.putLong("building3cost", Double.doubleToRawLongBits(buildings.get(2).cost));
             editor.putInt("building4amount", buildings.get(3).amount);
+            editor.putInt("building4level", buildings.get(0).level);
             editor.putLong("building4cost", Double.doubleToRawLongBits(buildings.get(3).cost));
             editor.putInt("building5amount", buildings.get(4).amount);
+            editor.putInt("building5level", buildings.get(0).level);
             editor.putLong("building5cost", Double.doubleToRawLongBits(buildings.get(4).cost));
             editor.putInt("building6amount", buildings.get(5).amount);
+            editor.putInt("building6level", buildings.get(0).level);
             editor.putLong("building6cost", Double.doubleToRawLongBits(buildings.get(5).cost));
             editor.putInt("building7amount", buildings.get(6).amount);
+            editor.putInt("building7level", buildings.get(0).level);
             editor.putLong("building7cost", Double.doubleToRawLongBits(buildings.get(6).cost));
             editor.putInt("building8amount", buildings.get(7).amount);
+            editor.putInt("building8level", buildings.get(0).level);
             editor.putLong("building8cost", Double.doubleToRawLongBits(buildings.get(7).cost));
             editor.putInt("building9amount", buildings.get(8).amount);
+            editor.putInt("building9level", buildings.get(0).level);
             editor.putLong("building9cost", Double.doubleToRawLongBits(buildings.get(8).cost));
             editor.putInt("building10amount", buildings.get(9).amount);
+            editor.putInt("building10level", buildings.get(0).level);
             editor.putLong("building10cost", Double.doubleToRawLongBits(buildings.get(9).cost));
             editor.putInt("building11amount", buildings.get(10).amount);
+            editor.putInt("building11level", buildings.get(0).level);
             editor.putLong("building11cost", Double.doubleToRawLongBits(buildings.get(10).cost));
             editor.putInt("building12amount", buildings.get(11).amount);
+            editor.putInt("building12level", buildings.get(0).level);
             editor.putLong("building12cost", Double.doubleToRawLongBits(buildings.get(11).cost));
             editor.putInt("building13amount", buildings.get(12).amount);
+            editor.putInt("building13level", buildings.get(0).level);
             editor.putLong("building13cost", Double.doubleToRawLongBits(buildings.get(12).cost));
             editor.putInt("building14amount", buildings.get(13).amount);
+            editor.putInt("building14level", buildings.get(0).level);
             editor.putLong("building14cost", Double.doubleToRawLongBits(buildings.get(13).cost));
-            editor.putInt("building15amount", buildings.get(13).amount);
+            editor.putInt("building15amount", buildings.get(14).amount);
+            editor.putInt("building15level", buildings.get(0).level);
             editor.putLong("building15cost", Double.doubleToRawLongBits(buildings.get(14).cost));
         }
         long tStart = System.nanoTime();
@@ -244,6 +279,7 @@ public class MainActivity extends AppCompatActivity
         editor.putLong("bankValue", Double.doubleToRawLongBits(bankValue));
         editor.putLong("totalValue", Double.doubleToRawLongBits(totalValue));
         editor.putLong("perSecondValue", Double.doubleToRawLongBits(perSecondValue));
+
 
         editor.apply();
 
@@ -260,91 +296,74 @@ public class MainActivity extends AppCompatActivity
 
             buildings.get(0).cost = Double.longBitsToDouble(prefs.getLong("building1cost", 0));
             buildings.get(0).amount = prefs.getInt("building1amount", 0);
-            buildings.get(0).amountTextView.setText(String.valueOf(buildings.get(0).amount));
-            buildings.get(0).costTextView.setText(numberToLetterFromDouble(buildings.get(0).cost));
+            buildings.get(0).level = prefs.getInt("building1level", 0);
             buildings.get(1).cost = Double.longBitsToDouble(prefs.getLong("building2cost", 0));
             buildings.get(1).amount = prefs.getInt("building2amount", 0);
-            buildings.get(1).amountTextView.setText(String.valueOf(buildings.get(1).amount));
-            buildings.get(1).costTextView.setText(numberToLetterFromDouble(buildings.get(1).cost));
+            buildings.get(1).level = prefs.getInt("building2level", 0);
             buildings.get(2).cost = Double.longBitsToDouble(prefs.getLong("building3cost", 0));
             buildings.get(2).amount = prefs.getInt("building3amount", 0);
-            buildings.get(2).amountTextView.setText(String.valueOf(buildings.get(2).amount));
-            buildings.get(2).costTextView.setText(numberToLetterFromDouble(buildings.get(2).cost));
+            buildings.get(2).level = prefs.getInt("building3level", 0);
             buildings.get(3).cost = Double.longBitsToDouble(prefs.getLong("building4cost", 0));
             buildings.get(3).amount = prefs.getInt("building4amount", 0);
-            buildings.get(3).amountTextView.setText(String.valueOf(buildings.get(3).amount));
-            buildings.get(3).costTextView.setText(numberToLetterFromDouble(buildings.get(3).cost));
+            buildings.get(3).level = prefs.getInt("building4level", 0);
             buildings.get(4).cost = Double.longBitsToDouble(prefs.getLong("building5cost", 0));
             buildings.get(4).amount = prefs.getInt("building5amount", 0);
-            buildings.get(4).amountTextView.setText(String.valueOf(buildings.get(4).amount));
-            buildings.get(4).costTextView.setText(numberToLetterFromDouble(buildings.get(4).cost));
+            buildings.get(4).level = prefs.getInt("building5level", 0);
             buildings.get(5).cost = Double.longBitsToDouble(prefs.getLong("building6cost", 0));
             buildings.get(5).amount = prefs.getInt("building6amount", 0);
-            buildings.get(5).amountTextView.setText(String.valueOf(buildings.get(5).amount));
-            buildings.get(5).costTextView.setText(numberToLetterFromDouble(buildings.get(5).cost));
+            buildings.get(5).level = prefs.getInt("building6level", 0);
             buildings.get(6).cost = Double.longBitsToDouble(prefs.getLong("building7cost", 0));
             buildings.get(6).amount = prefs.getInt("building7amount", 0);
-            buildings.get(6).amountTextView.setText(String.valueOf(buildings.get(6).amount));
-            buildings.get(6).costTextView.setText(numberToLetterFromDouble(buildings.get(6).cost));
+            buildings.get(6).level = prefs.getInt("building7level", 0);
             buildings.get(7).cost = Double.longBitsToDouble(prefs.getLong("building8cost", 0));
             buildings.get(7).amount = prefs.getInt("building8amount", 0);
-            buildings.get(7).amountTextView.setText(String.valueOf(buildings.get(7).amount));
-            buildings.get(7).costTextView.setText(numberToLetterFromDouble(buildings.get(7).cost));
+            buildings.get(7).level = prefs.getInt("building8level", 0);
             buildings.get(8).cost = Double.longBitsToDouble(prefs.getLong("building9cost", 0));
             buildings.get(8).amount = prefs.getInt("building9amount", 0);
-            buildings.get(8).amountTextView.setText(String.valueOf(buildings.get(8).amount));
-            buildings.get(8).costTextView.setText(numberToLetterFromDouble(buildings.get(8).cost));
+            buildings.get(8).level = prefs.getInt("building9level", 0);
             buildings.get(9).cost = Double.longBitsToDouble(prefs.getLong("building10cost", 0));
             buildings.get(9).amount = prefs.getInt("building10amount", 0);
-            buildings.get(9).amountTextView.setText(String.valueOf(buildings.get(9).amount));
-            buildings.get(9).costTextView.setText(numberToLetterFromDouble(buildings.get(9).cost));
+            buildings.get(9).level = prefs.getInt("building10level", 0);
             buildings.get(10).cost = Double.longBitsToDouble(prefs.getLong("building11cost", 0));
             buildings.get(10).amount = prefs.getInt("building11amount", 0);
-            buildings.get(10).amountTextView.setText(String.valueOf(buildings.get(10).amount));
-            buildings.get(10).costTextView.setText(numberToLetterFromDouble(buildings.get(10).cost));
+            buildings.get(10).level = prefs.getInt("building11level", 0);
             buildings.get(11).cost = Double.longBitsToDouble(prefs.getLong("building12cost", 0));
             buildings.get(11).amount = prefs.getInt("building12amount", 0);
-            buildings.get(11).amountTextView.setText(String.valueOf(buildings.get(11).amount));
-            buildings.get(11).costTextView.setText(numberToLetterFromDouble(buildings.get(11).cost));
+            buildings.get(11).level = prefs.getInt("building12level", 0);
             buildings.get(12).cost = Double.longBitsToDouble(prefs.getLong("building13cost", 0));
             buildings.get(12).amount = prefs.getInt("building13amount", 0);
-            buildings.get(12).amountTextView.setText(String.valueOf(buildings.get(12).amount));
-            buildings.get(12).costTextView.setText(numberToLetterFromDouble(buildings.get(12).cost));
+            buildings.get(12).level = prefs.getInt("building13level", 0);
             buildings.get(13).cost = Double.longBitsToDouble(prefs.getLong("building14cost", 0));
             buildings.get(13).amount = prefs.getInt("building14amount", 0);
-            buildings.get(13).amountTextView.setText(String.valueOf(buildings.get(13).amount));
-            buildings.get(13).costTextView.setText(numberToLetterFromDouble(buildings.get(13).cost));
-            buildings.get(14).cost = Double.longBitsToDouble(prefs.getLong("building12cost", 0));
+            buildings.get(13).level = prefs.getInt("building14level", 0);
+            buildings.get(14).cost = Double.longBitsToDouble(prefs.getLong("building15cost", 0));
             buildings.get(14).amount = prefs.getInt("building15amount", 0);
-            buildings.get(14).amountTextView.setText(String.valueOf(buildings.get(14).amount));
-            buildings.get(14).costTextView.setText(numberToLetterFromDouble(buildings.get(14).cost));
+            buildings.get(14).level = prefs.getInt("building15level", 0);
 
             bankValue = numberToLetter(Double.longBitsToDouble(prefs.getLong("bankValue", 0)));
             totalValue = numberToLetter(Double.longBitsToDouble(prefs.getLong("totalValue", 0)));
-            perSecondValue = numberToLetter(Double.longBitsToDouble(prefs.getLong("perSecondValue", 0)));
+            //perSecondValue = numberToLetterPerSecond(Double.longBitsToDouble(prefs.getLong("perSecondValue", 0)));
+
+            updatePerSecondValue();
 
             backgroundProduction(prefs.getLong("tStart", 0), perSecondValue);
         }
 
-        DecimalFormat format = new DecimalFormat("#");
-        format.setDecimalSeparatorAlwaysShown(false);
+        String bankString = numberToLetterFromDouble(bankValue);
+        bankText.setText(bankString);
 
-        bankValue = bankValue + 0.1 * perSecondValue;
-        String truncatedBank = format.format(bankValue);
-        bankText.setText(truncatedBank);
+        String totalString = getString(R.string.total) + " " + numberToLetterFromDouble(totalValue);
+        totalText.setText(totalString);
 
-        totalValue = totalValue + 0.1 * perSecondValue;
-        String truncatedTotal = format.format(totalValue);
-        totalText.setText("Total: " + truncatedTotal);
+        String perSecondString = getString(R.string.per_second) + " " + numberToLetterFromDoublePerSecond(perSecondValue);
+        perSecondText.setText(perSecondString);
 
-        DecimalFormat formatSecond = new DecimalFormat("#.##");
-        String truncatedPerSecond = formatSecond.format(perSecondValue);
-        perSecondText.setText("Per second: " + truncatedPerSecond);
+
     }
     //method for calculating backgound production between saveData and loadData timers
     void backgroundProduction(long tStart, double perSecond) {
-        long tEstimated = System.nanoTime() - tStart;
-        long tSeconds = TimeUnit.SECONDS.convert(tEstimated, TimeUnit.NANOSECONDS);
+        long tElapsed = System.nanoTime() - tStart;
+        long tSeconds = TimeUnit.SECONDS.convert(tElapsed, TimeUnit.NANOSECONDS);
         double backgroundGain = tSeconds * perSecond;
         bankValue = bankValue + backgroundGain;
         totalValue = totalValue + backgroundGain;
@@ -354,6 +373,8 @@ public class MainActivity extends AppCompatActivity
     class building {
         String name;
         int amount;
+        //upgrade level defining production speed multiplier
+        int level;
         //base cost is a cost of first building
         double baseCost;
         //cost is cost in currency of next building
@@ -372,8 +393,9 @@ public class MainActivity extends AppCompatActivity
         private void main() {
 
             building building1 = new building();
-            building1.name = "building1";
+            building1.name = getResources().getString(building1_name);
             building1.amount = 0;
+            building1.level = 1;
             building1.baseCost = 15;
             building1.cost = building1.baseCost;
             building1.production = 0.1;
@@ -382,6 +404,7 @@ public class MainActivity extends AppCompatActivity
             building building2 = new building();
             building2.name = "building2";
             building2.amount = 0;
+            building2.level = 1;
             building2.baseCost = 100;
             building2.cost = building2.baseCost;
             building2.production = 1;
@@ -390,6 +413,7 @@ public class MainActivity extends AppCompatActivity
             building building3 = new building();
             building3.name = "building3";
             building3.amount = 0;
+            building3.level = 1;
             building3.baseCost = 1100;
             building3.cost = building3.baseCost;
             building3.production = 8;
@@ -398,6 +422,7 @@ public class MainActivity extends AppCompatActivity
             building building4 = new building();
             building4.name = "building4";
             building4.amount = 0;
+            building4.level = 1;
             building4.baseCost = 12000;
             building4.cost = building4.baseCost;
             building4.production = 47;
@@ -406,6 +431,7 @@ public class MainActivity extends AppCompatActivity
             building building5 = new building();
             building5.name = "building5";
             building5.amount = 0;
+            building5.level = 1;
             building5.baseCost = 130000;
             building5.cost = building5.baseCost;
             building5.production = 260;
@@ -414,6 +440,7 @@ public class MainActivity extends AppCompatActivity
             building building6 = new building();
             building6.name = "building6";
             building6.amount = 0;
+            building6.level = 1;
             building6.baseCost = 1400000;
             building6.cost = building6.baseCost;
             building6.production = 1400;
@@ -422,6 +449,7 @@ public class MainActivity extends AppCompatActivity
             building building7 = new building();
             building7.name = "building7";
             building7.amount = 0;
+            building7.level = 1;
             building7.baseCost = 20000000;
             building7.cost = building7.baseCost;
             building7.production = 7800;
@@ -430,6 +458,7 @@ public class MainActivity extends AppCompatActivity
             building building8 = new building();
             building8.name = "building8";
             building8.amount = 0;
+            building8.level = 1;
             building8.baseCost = 330000000;
             building8.cost = building8.baseCost;
             building8.production = 44000;
@@ -438,6 +467,7 @@ public class MainActivity extends AppCompatActivity
             building building9 = new building();
             building9.name = "building9";
             building9.amount = 0;
+            building9.level = 1;
             building9.baseCost = 5100000000d;
             building9.cost = building9.baseCost;
             building9.production = 260000;
@@ -446,6 +476,7 @@ public class MainActivity extends AppCompatActivity
             building building10 = new building();
             building10.name = "building10";
             building10.amount = 0;
+            building10.level = 1;
             building10.baseCost = 75000000000d;
             building10.cost = building10.baseCost;
             building10.production = 1600000;
@@ -454,6 +485,7 @@ public class MainActivity extends AppCompatActivity
             building building11 = new building();
             building11.name = "building11";
             building11.amount = 0;
+            building11.level = 1;
             building11.baseCost = 1000000000000d;
             building11.cost = building11.baseCost;
             building11.production = 10000000;
@@ -462,6 +494,7 @@ public class MainActivity extends AppCompatActivity
             building building12 = new building();
             building12.name = "building12";
             building12.amount = 0;
+            building12.level = 1;
             building12.baseCost = 14000000000000d;
             building12.cost = building12.baseCost;
             building12.production = 65000000;
@@ -472,6 +505,7 @@ public class MainActivity extends AppCompatActivity
             building building13 = new building();
             building13.name = "building13";
             building13.amount = 0;
+            building13.level = 1;
             building13.baseCost = 14000000000000d;
             building13.cost = building13.baseCost;
             building13.production = 65000000;
@@ -480,6 +514,7 @@ public class MainActivity extends AppCompatActivity
             building building14 = new building();
             building14.name = "building14";
             building14.amount = 0;
+            building14.level = 1;
             building14.baseCost = 14000000000000d;
             building14.cost = building14.baseCost;
             building14.production = 65000000;
@@ -488,6 +523,7 @@ public class MainActivity extends AppCompatActivity
             building building15 = new building();
             building15.name = "building15";
             building15.amount = 0;
+            building15.level = 1;
             building15.baseCost = 14000000000000d;
             building15.cost = building15.baseCost;
             building15.production = 65000000;
@@ -502,6 +538,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 try {
                     while (!isInterrupted()) {
+                        //running the code every 1/10th of a second
                         Thread.sleep(100);
                         runOnUiThread(new Runnable() {
                             @Override
@@ -512,7 +549,8 @@ public class MainActivity extends AppCompatActivity
 
                                 totalValue = totalValue + 0.1 * perSecondValue;
                                 String truncatedTotal = numberToLetterFromDouble(totalValue);
-                                totalText.setText("Total: " + truncatedTotal);
+                                String totalString = getString(R.string.total)+ " " + truncatedTotal;
+                                totalText.setText(totalString);
                             }
                         });
                     }
@@ -523,33 +561,70 @@ public class MainActivity extends AppCompatActivity
         t.start();
     }
 
+    static void updatePerSecondValue() {
+        for (building building : buildings) {
+            perSecondValue = perSecondValue + building.amount*building.production*building.level;
+        }
+    }
+
     //method converting big numbers inside double to smaller ones with letters
     static double numberToLetter(double value) {
         DecimalFormat format = new DecimalFormat("#");
         format.setDecimalSeparatorAlwaysShown(false);
         String truncatedValue = format.format(value);
 
-        //M=million, B=billion, etc
+        //m=million, b=billion, etc
         if (value >= 1000000 && value < 1000000000)
-            truncatedValue = String.format("%.2fM", value/ 1000000.0);
+            truncatedValue = String.format("%.2fm", value/ 1000000.0);
         if (value >= 1000000000 && value < 1000000000000d)
-            truncatedValue = String.format("%.2fB", value/ 1000000000.0);
+            truncatedValue = String.format("%.2fb", value/ 1000000000.0);
         if (value >= 1000000000000d && value < 1000000000000000d)
-            truncatedValue = String.format("%.2fT", value/ 1000000000000.0);
+            truncatedValue = String.format("%.2ft", value/ 1000000000000.0);
         if (value >= 1000000000000000d && value < 1000000000000000000d)
-            truncatedValue = String.format("%.2fQd", value/ 1000000000000000.0);
+            truncatedValue = String.format("%.2fqd", value/ 1000000000000000.0);
         if (value >= 1000000000000000000d && value < 1000000000000000000000d)
-            truncatedValue = String.format("%.2fQn", value/ 1000000000000000000.0);
+            truncatedValue = String.format("%.2fqn", value/ 1000000000000000000.0);
         if (value >= 1000000000000000000000d && value < 1000000000000000000000000d)
-            truncatedValue = String.format("%.2fSx", value/ 1000000000000000000000.0);
+            truncatedValue = String.format("%.2fsx", value/ 1000000000000000000000.0);
         if (value >= 1000000000000000000000000d && value < 1000000000000000000000000000d)
-            truncatedValue = String.format("%.2fSp", value/ 1000000000000000000000000.0);
+            truncatedValue = String.format("%.2fsp", value/ 1000000000000000000000000.0);
         if (value >= 1000000000000000000000000000d && value < 1000000000000000000000000000000d)
-            truncatedValue = String.format("%.2fO", value/ 1000000000000000000000000000.0);
+            truncatedValue = String.format("%.2fo", value/ 1000000000000000000000000000.0);
         if (value >= 1000000000000000000000000000000d && value < 1000000000000000000000000000000000d)
-            truncatedValue = String.format("%.2fN", value/ 1000000000000000000000000000000.0);
+            truncatedValue = String.format("%.2fn", value/ 1000000000000000000000000000000.0);
         if (value >= 1000000000000000000000000000000000d && value < 1000000000000000000000000000000000000d)
-            truncatedValue = String.format("%.2fD", value/ 1000000000000000000000000000000000.0);
+            truncatedValue = String.format("%.2fd", value/ 1000000000000000000000000000000000.0);
+
+        value = Double.parseDouble(truncatedValue);
+        return value;
+    }
+    //method converting big numbers inside double to smaller ones with letters
+    static double numberToLetterPerSecond(double value) {
+        DecimalFormat format = new DecimalFormat("#.#");
+        format.setDecimalSeparatorAlwaysShown(false);
+        String truncatedValue = format.format(value);
+
+        //m=million, b=billion, etc
+        if (value >= 1000000 && value < 1000000000)
+            truncatedValue = String.format("%.2fm", value/ 1000000.0);
+        if (value >= 1000000000 && value < 1000000000000d)
+            truncatedValue = String.format("%.2fb", value/ 1000000000.0);
+        if (value >= 1000000000000d && value < 1000000000000000d)
+            truncatedValue = String.format("%.2ft", value/ 1000000000000.0);
+        if (value >= 1000000000000000d && value < 1000000000000000000d)
+            truncatedValue = String.format("%.2fqd", value/ 1000000000000000.0);
+        if (value >= 1000000000000000000d && value < 1000000000000000000000d)
+            truncatedValue = String.format("%.2fqn", value/ 1000000000000000000.0);
+        if (value >= 1000000000000000000000d && value < 1000000000000000000000000d)
+            truncatedValue = String.format("%.2fsx", value/ 1000000000000000000000.0);
+        if (value >= 1000000000000000000000000d && value < 1000000000000000000000000000d)
+            truncatedValue = String.format("%.2fsp", value/ 1000000000000000000000000.0);
+        if (value >= 1000000000000000000000000000d && value < 1000000000000000000000000000000d)
+            truncatedValue = String.format("%.2fo", value/ 1000000000000000000000000000.0);
+        if (value >= 1000000000000000000000000000000d && value < 1000000000000000000000000000000000d)
+            truncatedValue = String.format("%.2fn", value/ 1000000000000000000000000000000.0);
+        if (value >= 1000000000000000000000000000000000d && value < 1000000000000000000000000000000000000d)
+            truncatedValue = String.format("%.2fd", value/ 1000000000000000000000000000000000.0);
 
         value = Double.parseDouble(truncatedValue);
         return value;
@@ -587,7 +662,7 @@ public class MainActivity extends AppCompatActivity
         return truncatedValue;
     }
     //method converting double to string while replacing big numbers with smaller ones with letters and keeping one decimal
-    static String numberToLetterFromDoubleBankPerSecond(double value) {
+    static String numberToLetterFromDoublePerSecond(double value) {
         DecimalFormat format = new DecimalFormat("#.#");
         format.setDecimalSeparatorAlwaysShown(false);
         String truncatedValue = format.format(value);
@@ -617,6 +692,12 @@ public class MainActivity extends AppCompatActivity
             truncatedValue = String.format("%.2fd", value/ 1000000000000000000000000000000000.0);
 
         return truncatedValue;
+    }
+
+    //starting About activity, used as a menu option in menu toolbar overflow
+    private void launchAboutActivity() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -671,7 +752,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 return true;
             case R.id.popup_about:
-                Toast.makeText(getApplicationContext(),"Popup about successful",Toast.LENGTH_SHORT).show();
+                launchAboutActivity();
                 return true;
 
             default:
@@ -681,10 +762,8 @@ public class MainActivity extends AppCompatActivity
 
     //TODO write mute_sound and unmute_sound methods (hard without having any sound)
     public void mute_sound() {
-        sound = false;
     }
     public void unmute_sound() {
-        sound = true;
     }
 
     //TODO write mute_sound and unmute_sound methods (hard without having any music)
@@ -750,5 +829,4 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
     };
-
 }
