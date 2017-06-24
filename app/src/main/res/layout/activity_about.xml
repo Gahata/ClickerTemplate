@@ -90,7 +90,8 @@
                     android:paddingLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:text="Google Play"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -116,7 +117,8 @@
                     android:paddingLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:text="Twitter"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -142,7 +144,8 @@
                     android:paddingLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:text="Google+"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 

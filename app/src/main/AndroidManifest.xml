@@ -29,7 +29,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.pjezi.clickertemplate.MainActivity" />
         </activity>
-        <activity android:name=".UpgradesAdapter"></activity>
     </application>
 
 </manifest>

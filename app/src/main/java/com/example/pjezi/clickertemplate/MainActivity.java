@@ -1,10 +1,8 @@
 package com.example.pjezi.clickertemplate;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,16 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,10 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 import static com.example.pjezi.clickertemplate.R.id.bottom_nav_bar;
 import static com.example.pjezi.clickertemplate.R.id.popup_fullscreen;
-import static com.example.pjezi.clickertemplate.R.string.building1_name;
 
 public class MainActivity extends AppCompatActivity
         implements BuildingsFragment.OnFragmentInteractionListener, ClickFragment.OnFragmentInteractionListener, UpgradesFragment.OnFragmentInteractionListener{
+
+    //resources variable to access resources from other .java files inside project, initialized on onCreate
+    public static Resources resources;
 
     //button for notification view opening
     private ImageButton notificationButton;
@@ -65,11 +62,16 @@ public class MainActivity extends AppCompatActivity
     static int clicksAmount;
 
     //buildings class instance;
-    building building;
+    Building building;
 
     //arraylist for storing all buildings with their values
-    public static ArrayList<building> buildings = new ArrayList<>();
-    public static ArrayList<Building> buildings2 = new ArrayList<>();
+    public static ArrayList<Building> buildings = new ArrayList<>();
+
+    //upgrades class instance;
+    Upgrade upgrade;
+
+    //arraylist for storing all upgrades with their values
+    public static ArrayList<Upgrade> upgrades = new ArrayList<>();
 
 
     private ViewPager pager;
@@ -119,6 +121,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //initialization of resources so other files can use resources
+        resources = getResources();
 
         //making bottomnavbar work
         final BottomNavigationView navigation = (BottomNavigationView) findViewById(bottom_nav_bar);
@@ -200,8 +205,9 @@ public class MainActivity extends AppCompatActivity
     //method initializing gameplay
     void play() {
         //create buildings
-        building = new building();
+        building = new Building();
         building.main();
+        upgrade.main();
         //initialize currency per second update process
         textViewRefresher();
     }
@@ -369,167 +375,6 @@ public class MainActivity extends AppCompatActivity
         totalValue = totalValue + backgroundGain;
     }
 
-    //class with all generic building information
-    class building {
-        String name;
-        int amount;
-        //upgrade level defining production speed multiplier
-        int level;
-        //base cost is a cost of first building
-        double baseCost;
-        //cost is cost in currency of next building
-        double cost;
-        //production is currency/second value of a single building
-        double production;
-
-        TextView nameTextView;
-        TextView amountTextView;
-        TextView costTextView;
-        Button purchaseButton;
-        Button sellButton;
-        Button expandButton;
-        LinearLayout expandedLayout;
-
-        private void main() {
-
-            building building1 = new building();
-            building1.name = getResources().getString(building1_name);
-            building1.amount = 0;
-            building1.level = 1;
-            building1.baseCost = 15;
-            building1.cost = building1.baseCost;
-            building1.production = 0.1;
-            buildings.add(building1);
-
-            building building2 = new building();
-            building2.name = "building2";
-            building2.amount = 0;
-            building2.level = 1;
-            building2.baseCost = 100;
-            building2.cost = building2.baseCost;
-            building2.production = 1;
-            buildings.add(building2);
-
-            building building3 = new building();
-            building3.name = "building3";
-            building3.amount = 0;
-            building3.level = 1;
-            building3.baseCost = 1100;
-            building3.cost = building3.baseCost;
-            building3.production = 8;
-            buildings.add(building3);
-
-            building building4 = new building();
-            building4.name = "building4";
-            building4.amount = 0;
-            building4.level = 1;
-            building4.baseCost = 12000;
-            building4.cost = building4.baseCost;
-            building4.production = 47;
-            buildings.add(building4);
-
-            building building5 = new building();
-            building5.name = "building5";
-            building5.amount = 0;
-            building5.level = 1;
-            building5.baseCost = 130000;
-            building5.cost = building5.baseCost;
-            building5.production = 260;
-            buildings.add(building5);
-
-            building building6 = new building();
-            building6.name = "building6";
-            building6.amount = 0;
-            building6.level = 1;
-            building6.baseCost = 1400000;
-            building6.cost = building6.baseCost;
-            building6.production = 1400;
-            buildings.add(building6);
-
-            building building7 = new building();
-            building7.name = "building7";
-            building7.amount = 0;
-            building7.level = 1;
-            building7.baseCost = 20000000;
-            building7.cost = building7.baseCost;
-            building7.production = 7800;
-            buildings.add(building7);
-
-            building building8 = new building();
-            building8.name = "building8";
-            building8.amount = 0;
-            building8.level = 1;
-            building8.baseCost = 330000000;
-            building8.cost = building8.baseCost;
-            building8.production = 44000;
-            buildings.add(building8);
-
-            building building9 = new building();
-            building9.name = "building9";
-            building9.amount = 0;
-            building9.level = 1;
-            building9.baseCost = 5100000000d;
-            building9.cost = building9.baseCost;
-            building9.production = 260000;
-            buildings.add(building9);
-
-            building building10 = new building();
-            building10.name = "building10";
-            building10.amount = 0;
-            building10.level = 1;
-            building10.baseCost = 75000000000d;
-            building10.cost = building10.baseCost;
-            building10.production = 1600000;
-            buildings.add(building10);
-
-            building building11 = new building();
-            building11.name = "building11";
-            building11.amount = 0;
-            building11.level = 1;
-            building11.baseCost = 1000000000000d;
-            building11.cost = building11.baseCost;
-            building11.production = 10000000;
-            buildings.add(building11);
-
-            building building12 = new building();
-            building12.name = "building12";
-            building12.amount = 0;
-            building12.level = 1;
-            building12.baseCost = 14000000000000d;
-            building12.cost = building12.baseCost;
-            building12.production = 65000000;
-            buildings.add(building12);
-
-
-            //TODO set numerical values that are anyhow proper for buildings 13-15
-            building building13 = new building();
-            building13.name = "building13";
-            building13.amount = 0;
-            building13.level = 1;
-            building13.baseCost = 14000000000000d;
-            building13.cost = building13.baseCost;
-            building13.production = 65000000;
-            buildings.add(building13);
-
-            building building14 = new building();
-            building14.name = "building14";
-            building14.amount = 0;
-            building14.level = 1;
-            building14.baseCost = 14000000000000d;
-            building14.cost = building14.baseCost;
-            building14.production = 65000000;
-            buildings.add(building14);
-
-            building building15 = new building();
-            building15.name = "building15";
-            building15.amount = 0;
-            building15.level = 1;
-            building15.baseCost = 14000000000000d;
-            building15.cost = building15.baseCost;
-            building15.production = 65000000;
-            buildings.add(building15);
-        }
-    }
 
     //thread for currency production
     void textViewRefresher() {
@@ -562,7 +407,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     static void updatePerSecondValue() {
-        for (building building : buildings) {
+        for (Building building : buildings) {
             perSecondValue = perSecondValue + building.amount*building.production*building.level;
         }
     }

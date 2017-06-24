@@ -8,15 +8,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.List;
+import static com.example.pjezi.clickertemplate.MainActivity.upgrades;
 
 public class UpgradesAdapter extends RecyclerView.Adapter<UpgradesAdapter.ViewHolder> {
 
-    private List<Upgrade> upgradeList;
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public CardView mCardView;
-        public TextView titleTextView;
+        public TextView nameTextView;
         public TextView descriptionTextView;
         public TextView priceTextView;
         public Button purchaseButton;
@@ -24,16 +22,15 @@ public class UpgradesAdapter extends RecyclerView.Adapter<UpgradesAdapter.ViewHo
         public ViewHolder(View v) {
             super(v);
 
-            mCardView = (CardView) v.findViewById(R.id.upgrade_card) ;
-            titleTextView = (TextView) v.findViewById(R.id.upgrade_title);
-            descriptionTextView = (TextView) v.findViewById(R.id.upgrade_description);
-            priceTextView = (TextView) v.findViewById(R.id.upgrade_price);
-            purchaseButton = (Button) v.findViewById(R.id.upgrade_purchase);
+            mCardView = (CardView) v.findViewById(R.id.upgrade_cardiew) ;
+            nameTextView = (TextView) v.findViewById(R.id.upgrade_name_textview);
+            descriptionTextView = (TextView) v.findViewById(R.id.upgrade_description_textview);
+            priceTextView = (TextView) v.findViewById(R.id.upgrade_price_textview);
+            purchaseButton = (Button) v.findViewById(R.id.upgrade_purchase_button);
         }
     }
 
-    public UpgradesAdapter(List<Upgrade> upgradeList) {
-        this.upgradeList = upgradeList;
+    public UpgradesAdapter() {
     }
 
     @Override
@@ -45,14 +42,14 @@ public class UpgradesAdapter extends RecyclerView.Adapter<UpgradesAdapter.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Upgrade upgrade = upgradeList.get(position);
-        viewHolder.titleTextView.setText(upgrade.getTitle());
+        Upgrade upgrade = upgrades.get(position);
+        viewHolder.nameTextView.setText(upgrade.getName());
         viewHolder.descriptionTextView.setText(upgrade.getDescription());
         viewHolder.priceTextView.setText(String.valueOf(upgrade.getPrice()));
     }
 
     @Override
     public int getItemCount() {
-        return upgradeList.size();
+        return upgrades.size();
     }
 }

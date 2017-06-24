@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/upgrade_card"
+            android:id="@+id/upgrade_cardiew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -21,21 +21,19 @@
 
 
                 <TextView
-                    android:id="@+id/upgrade_title"
+                    android:id="@+id/upgrade_name_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:text="@string/building1_name"
                     android:textColor="@color/md_black_1000"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/upgrade_description"
+                    android:id="@+id/upgrade_description_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/building1_flavour"
                     android:textSize="16sp" />
 
 
@@ -46,7 +44,7 @@
                     android:paddingTop="4dp">
 
                     <TextView
-                        android:id="@+id/upgrade_price"
+                        android:id="@+id/upgrade_price_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
@@ -55,7 +53,7 @@
                         android:textSize="16sp" />
 
                     <Button
-                        android:id="@+id/upgrade_purchase"
+                        android:id="@+id/upgrade_purchase_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"

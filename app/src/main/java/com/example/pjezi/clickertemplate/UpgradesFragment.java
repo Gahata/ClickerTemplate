@@ -11,13 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.example.pjezi.clickertemplate.MainActivity.buildings2;
+import static com.example.pjezi.clickertemplate.MainActivity.buildings;
+import static com.example.pjezi.clickertemplate.MainActivity.upgrades;
 
 public class UpgradesFragment extends Fragment {
-
-    private ArrayList upgradesList;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -37,8 +35,6 @@ public class UpgradesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createUpgrades(MainActivity.buildings);
-
         if (getArguments() != null) {
         }
     }
@@ -52,17 +48,12 @@ public class UpgradesFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if (upgradesList.size() != 0) {
-            mAdapter = new UpgradesAdapter(upgradesList);
+        if (buildings.size() != 0) {
+            mAdapter = new UpgradesAdapter();
             mRecyclerView.setAdapter(mAdapter);
         }
         return v;
     }
-
-    private void createUpgrades(ArrayList buildings) {
-        upgradesList.add(new Upgrade(getString(R.string.upgrade1_name),getString(R.string.upgrade1_description), 10000, buildings2.get(0)));
-    }
-
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

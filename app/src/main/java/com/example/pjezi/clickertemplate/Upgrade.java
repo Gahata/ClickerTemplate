@@ -1,27 +1,37 @@
 package com.example.pjezi.clickertemplate;
 
+import android.content.res.Resources;
+
+import static com.example.pjezi.clickertemplate.MainActivity.buildings;
+import static com.example.pjezi.clickertemplate.MainActivity.upgrades;
+
 public class Upgrade {
 
-    private String title;
+    private String name;
     private String description;
     private double price;
     private boolean purchased;
+    //building that the upgrade is associated with
     private Building building;
 
     public Upgrade(String title, String description, double price, Building building) {
-        this.title = title;
+        this.name = title;
         this.description = description;
         this.price = price;
         this.purchased = false;
         this.building = building;
     }
 
-    public String getTitle() {
-        return title;
+    void main() {
+        upgrades.add(new Upgrade(Resources.getSystem().getString(R.string.upgrade1_name),Resources.getSystem().getString(R.string.upgrade1_description), 10000, buildings.get(0)));
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getPrice() {
