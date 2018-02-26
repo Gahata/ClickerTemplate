@@ -23,7 +23,7 @@ public class Upgrade {
     }
 
     void main() {
-        upgrades.add(new Upgrade(Resources.getSystem().getString(R.string.upgrade1_name),Resources.getSystem().getString(R.string.upgrade1_description), 10000, buildings.get(0)));
+        //upgrades.add(new Upgrade(Resources.getSystem().getString(R.string.upgrade1_name),Resources.getSystem().getString(R.string.upgrade1_description), 10000, buildings.get(0)));
     }
 
     public String getName() {

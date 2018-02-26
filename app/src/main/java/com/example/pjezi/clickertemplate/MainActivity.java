@@ -1,5 +1,6 @@
 package com.example.pjezi.clickertemplate;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -31,6 +32,8 @@ import static com.example.pjezi.clickertemplate.R.id.popup_fullscreen;
 
 public class MainActivity extends AppCompatActivity
         implements BuildingsFragment.OnFragmentInteractionListener, ClickFragment.OnFragmentInteractionListener, UpgradesFragment.OnFragmentInteractionListener{
+
+    public static Context contextMainActivity;
 
     //resources variable to access resources from other .java files inside project, initialized on onCreate
     public static Resources resources;
@@ -66,9 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     //arraylist for storing all buildings with their values
     public static ArrayList<Building> buildings = new ArrayList<>();
-
-    //upgrades class instance;
-    Upgrade upgrade;
 
     //arraylist for storing all upgrades with their values
     public static ArrayList<Upgrade> upgrades = new ArrayList<>();
@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        contextMainActivity = getApplicationContext();
 
         //initialization of resources so other files can use resources
         resources = getResources();
@@ -200,16 +202,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    //method initializing gameplay
-    void play() {
-        //create buildings
-        building = new Building();
-        building.main();
-        upgrade.main();
-        //initialize currency per second update process
-        textViewRefresher();
     }
 
     //initializator for saveData() method
@@ -292,7 +284,7 @@ public class MainActivity extends AppCompatActivity
     }
     //method to load all data after app is restarted
     void loadData() {
-        play();
+        textViewRefresher();
         SharedPreferences prefs = getSharedPreferences("savedData", MODE_PRIVATE);
         //checking if one value exists in sharedPrefs, ie if sharedPrefs have been saved
         if (prefs.contains("building1cost")) {
@@ -300,7 +292,16 @@ public class MainActivity extends AppCompatActivity
             DecimalFormat format = new DecimalFormat("#");
             format.setDecimalSeparatorAlwaysShown(false);
 
-            buildings.get(0).cost = Double.longBitsToDouble(prefs.getLong("building1cost", 0));
+            for (int i=0; i<buildings.size(); i++) {
+                String cost = "building" + String.valueOf(i) + "cost";
+                String amount = "building" + String.valueOf(i) + "amount";
+                String level = "building" + String.valueOf(i) + "level";
+                buildings.get(i).cost = Double.longBitsToDouble(prefs.getLong(cost, 0));
+                buildings.get(i).amount = prefs.getInt(amount, 0);
+                buildings.get(i).level = prefs.getInt(level, 0);
+            }
+
+            /*buildings.get(0).cost = Double.longBitsToDouble(prefs.getLong("building1cost", 0));
             buildings.get(0).amount = prefs.getInt("building1amount", 0);
             buildings.get(0).level = prefs.getInt("building1level", 0);
             buildings.get(1).cost = Double.longBitsToDouble(prefs.getLong("building2cost", 0));
@@ -344,7 +345,7 @@ public class MainActivity extends AppCompatActivity
             buildings.get(13).level = prefs.getInt("building14level", 0);
             buildings.get(14).cost = Double.longBitsToDouble(prefs.getLong("building15cost", 0));
             buildings.get(14).amount = prefs.getInt("building15amount", 0);
-            buildings.get(14).level = prefs.getInt("building15level", 0);
+            buildings.get(14).level = prefs.getInt("building15level", 0);*/
 
             bankValue = numberToLetter(Double.longBitsToDouble(prefs.getLong("bankValue", 0)));
             totalValue = numberToLetter(Double.longBitsToDouble(prefs.getLong("totalValue", 0)));
@@ -410,6 +411,11 @@ public class MainActivity extends AppCompatActivity
         for (Building building : buildings) {
             perSecondValue = perSecondValue + building.amount*building.production*building.level;
         }
+    }
+
+    public void perSecondTextChanger(double value) {
+        String perSecondString = getResources().getString(R.string.per_second_production) + " " + numberToLetterFromDoublePerSecond(value);
+        perSecondText.setText(perSecondString);
     }
 
     //method converting big numbers inside double to smaller ones with letters
